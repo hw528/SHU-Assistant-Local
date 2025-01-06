@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>技术报告书.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="%E4%B8%8A%E6%B5%B7%E5%A4%A7%E5%AD%A6%E7%A7%91%E5%88%9B%E6%AF%94%E8%B5%9B%E6%8A%80%E6%9C%AF%E6%96%B9%E6%A1%88%E6%8A%A5%E5%91%8A%E4%B9%A6">上海大学科创比赛技术方案报告书</h1>
+<h2 id="%E7%9B%AE%E5%BD%95">目录</h2>
+<ol>
+<li>前言</li>
+<li>技术介绍
+<ul>
+<li>2.1 项目背景</li>
+<li>2.2 使用的技术
+<ul>
+<li>2.2.1 前端技术</li>
+<li>2.2.2 后端技术</li>
+<li>2.2.3 数据处理</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>实现目标及实现思路
+<ul>
+<li>3.1 明确目标</li>
+<li>3.2 实现思路</li>
+</ul>
+</li>
+<li>开发过程
+<ul>
+<li>4.1 前端开发
+<ul>
+<li>4.1.1 环境搭建</li>
+<li>4.1.2 主要功能实现</li>
+</ul>
+</li>
+<li>4.2 后端开发
+<ul>
+<li>4.2.1 环境搭建</li>
+<li>4.2.2 主要功能实现</li>
+</ul>
+</li>
+<li>4.3 数据处理
+<ul>
+<li>4.3.1 数据收集</li>
+<li>4.3.2 数据处理与存储</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>项目测试
+<ul>
+<li>5.1 测试方法</li>
+<li>5.2 测试结果</li>
+</ul>
+</li>
+<li>市场优势
+<ul>
+<li>6.1 识别准确度的提高</li>
+<li>6.2 识别效率的提高</li>
+</ul>
+</li>
+<li>队内日程及成员成长
+<ul>
+<li>7.1 队内日程</li>
+<li>7.2 收获</li>
+<li>7.3 后续研发方向</li>
+<li>7.4 展望</li>
+</ul>
+</li>
+<li>结论</li>
+<li>致谢</li>
+<li>参考文献</li>
+</ol>
+<h2 id="1-%E5%89%8D%E8%A8%80">1. 前言</h2>
+<p>简要介绍项目的背景和目的。</p>
+<h2 id="2-%E6%8A%80%E6%9C%AF%E4%BB%8B%E7%BB%8D">2. 技术介绍</h2>
+<h3 id="21-%E9%A1%B9%E7%9B%AE%E8%83%8C%E6%99%AF">2.1 项目背景</h3>
+<p>描述项目的背景和需求。</p>
+<h3 id="22-%E4%BD%BF%E7%94%A8%E7%9A%84%E6%8A%80%E6%9C%AF">2.2 使用的技术</h3>
+<h4 id="221-%E5%89%8D%E7%AB%AF%E6%8A%80%E6%9C%AF">2.2.1 前端技术</h4>
+<ul>
+<li>HTML, CSS, JavaScript, Tailwind CSS</li>
+</ul>
+<h4 id="222-%E5%90%8E%E7%AB%AF%E6%8A%80%E6%9C%AF">2.2.2 后端技术</h4>
+<ul>
+<li>Python, OpenAI API</li>
+</ul>
+<h4 id="223-%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86">2.2.3 数据处理</h4>
+<ul>
+<li>JSON 数据存储与处理</li>
+</ul>
+<h2 id="3-%E5%AE%9E%E7%8E%B0%E7%9B%AE%E6%A0%87%E5%8F%8A%E5%AE%9E%E7%8E%B0%E6%80%9D%E8%B7%AF">3. 实现目标及实现思路</h2>
+<h3 id="31-%E6%98%8E%E7%A1%AE%E7%9B%AE%E6%A0%87">3.1 明确目标</h3>
+<p>明确项目的具体目标。</p>
+<h3 id="32-%E5%AE%9E%E7%8E%B0%E6%80%9D%E8%B7%AF">3.2 实现思路</h3>
+<p>描述实现项目的总体思路和方案。</p>
+<h2 id="4-%E5%BC%80%E5%8F%91%E8%BF%87%E7%A8%8B">4. 开发过程</h2>
+<h3 id="41-%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%91">4.1 前端开发</h3>
+<h4 id="411-%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA">4.1.1 环境搭建</h4>
+<p>描述前端开发环境的搭建过程。</p>
+<h4 id="412-%E4%B8%BB%E8%A6%81%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0">4.1.2 主要功能实现</h4>
+<p>描述前端主要功能的实现。</p>
+<h3 id="42-%E5%90%8E%E7%AB%AF%E5%BC%80%E5%8F%91">4.2 后端开发</h3>
+<h4 id="421-%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA">4.2.1 环境搭建</h4>
+<p>描述后端开发环境的搭建过程。</p>
+<h4 id="422-%E4%B8%BB%E8%A6%81%E5%8A%9F%E8%83%BD%E5%AE%9E%E7%8E%B0">4.2.2 主要功能实现</h4>
+<p>描述后端主要功能的实现。</p>
+<h3 id="43-%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86">4.3 数据处理</h3>
+<h4 id="431-%E6%95%B0%E6%8D%AE%E6%94%B6%E9%9B%86">4.3.1 数据收集</h4>
+<p>描述数据的收集过程。</p>
+<h4 id="432-%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86%E4%B8%8E%E5%AD%98%E5%82%A8">4.3.2 数据处理与存储</h4>
+<p>描述数据的处理和存储方法。</p>
+<h2 id="5-%E9%A1%B9%E7%9B%AE%E6%B5%8B%E8%AF%95">5. 项目测试</h2>
+<h3 id="51-%E6%B5%8B%E8%AF%95%E6%96%B9%E6%B3%95">5.1 测试方法</h3>
+<p>描述项目的测试方法。</p>
+<h3 id="52-%E6%B5%8B%E8%AF%95%E7%BB%93%E6%9E%9C">5.2 测试结果</h3>
+<p>描述测试结果和分析。</p>
+<h2 id="6-%E5%B8%82%E5%9C%BA%E4%BC%98%E5%8A%BF">6. 市场优势</h2>
+<h3 id="61-%E8%AF%86%E5%88%AB%E5%87%86%E7%A1%AE%E5%BA%A6%E7%9A%84%E6%8F%90%E9%AB%98">6.1 识别准确度的提高</h3>
+<p>描述项目在识别准确度上的优势。</p>
+<h3 id="62-%E8%AF%86%E5%88%AB%E6%95%88%E7%8E%87%E7%9A%84%E6%8F%90%E9%AB%98">6.2 识别效率的提高</h3>
+<p>描述项目在识别效率上的优势。</p>
+<h2 id="7-%E9%98%9F%E5%86%85%E6%97%A5%E7%A8%8B%E5%8F%8A%E6%88%90%E5%91%98%E6%88%90%E9%95%BF">7. 队内日程及成员成长</h2>
+<h3 id="71-%E9%98%9F%E5%86%85%E6%97%A5%E7%A8%8B">7.1 队内日程</h3>
+<p>描述项目的开发日程。</p>
+<h3 id="72-%E6%94%B6%E8%8E%B7">7.2 收获</h3>
+<p>描述团队成员在项目中的收获。</p>
+<h3 id="73-%E5%90%8E%E7%BB%AD%E7%A0%94%E5%8F%91%E6%96%B9%E5%90%91">7.3 后续研发方向</h3>
+<p>描述项目的后续研发方向。</p>
+<h3 id="74-%E5%B1%95%E6%9C%9B">7.4 展望</h3>
+<p>对项目未来的展望。</p>
+<h2 id="8-%E7%BB%93%E8%AE%BA">8. 结论</h2>
+<p>总结项目的成果和影响。</p>
+<h2 id="9-%E8%87%B4%E8%B0%A2">9. 致谢</h2>
+<p>感谢在项目中给予帮助和支持的人。</p>
+<h2 id="10-%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE">10. 参考文献</h2>
+<p>列出参考的文献和资料。</p>
+<hr>
+
+</body>
+</html>

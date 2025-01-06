@@ -133,7 +133,33 @@ function createMessageActions(messageDiv, bubble, originalQuestion) {
                     accumulatedText += text;
                     
                     try {
-                        newBubble.innerHTML = marked.parse(accumulatedText);
+                        // 检查是否包含图片标记
+                        if (accumulatedText.includes('[IMAGE]')) {
+                            // 分割文本和图片标记
+                            const parts = accumulatedText.split(/\[IMAGE\](.*?)\[\/IMAGE\]/);
+                            let newHtml = '';
+                            
+                            for (let i = 0; i < parts.length; i++) {
+                                if (i % 2 === 0) {
+                                    // 普通文本部分
+                                    newHtml += marked.parse(parts[i]);
+                                } else {
+                                    // 图片路径部分
+                                    const imgElement = document.createElement('img');
+                                    // 修改图片路径，指向本地images目录
+                                    const localPath = parts[i].replace('企创图片资料', 'images/企创图片资料');
+                                    imgElement.src = localPath;
+                                    imgElement.alt = "Related image";
+                                    imgElement.style.maxWidth = "100%";
+                                    imgElement.style.marginTop = "10px";
+                                    imgElement.style.marginBottom = "10px";
+                                    newHtml += imgElement.outerHTML;
+                                }
+                            }
+                            newBubble.innerHTML = newHtml;
+                        } else {
+                            newBubble.innerHTML = marked.parse(accumulatedText);
+                        }
                     } catch (e) {
                         newBubble.textContent = accumulatedText;
                     }
@@ -325,6 +351,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     bubble.textContent = accumulatedText;
                 }
 
+                // 继续读取剩余数据
                 while (true) {
                     const {done, value} = await reader.read();
                     if (done) break;
@@ -333,7 +360,33 @@ document.addEventListener('DOMContentLoaded', () => {
                     accumulatedText += text;
                     
                     try {
-                        bubble.innerHTML = marked.parse(accumulatedText);
+                        // 检查是否包含图片标记
+                        if (accumulatedText.includes('[IMAGE]')) {
+                            // 分割文本和图片标记
+                            const parts = accumulatedText.split(/\[IMAGE\](.*?)\[\/IMAGE\]/);
+                            let newHtml = '';
+                            
+                            for (let i = 0; i < parts.length; i++) {
+                                if (i % 2 === 0) {
+                                    // 普通文本部分
+                                    newHtml += marked.parse(parts[i]);
+                                } else {
+                                    // 图片路径部分
+                                    const imgElement = document.createElement('img');
+                                    // 修改图片路径，指向本地images目录
+                                    const localPath = parts[i].replace('企创图片资料', 'images/企创图片资料');
+                                    imgElement.src = localPath;
+                                    imgElement.alt = "Related image";
+                                    imgElement.style.maxWidth = "100%";
+                                    imgElement.style.marginTop = "10px";
+                                    imgElement.style.marginBottom = "10px";
+                                    newHtml += imgElement.outerHTML;
+                                }
+                            }
+                            bubble.innerHTML = newHtml;
+                        } else {
+                            bubble.innerHTML = marked.parse(accumulatedText);
+                        }
                     } catch (e) {
                         bubble.textContent = accumulatedText;
                     }

@@ -70,6 +70,15 @@ class QASystem:
             if chunk.choices[0].delta.content:
                 content = chunk.choices[0].delta.content
                 full_response += content
+                
+                # 检查是否包含图片路径，如果有则插入特殊标记
+                if "企创图片资料" in content:
+                    import re
+                    paths = re.findall(r'企创图片资料/[^，。\s]+\.jpg', content)
+                    for path in paths:
+                        # 在提到图片路径的地方插入特殊标记
+                        content = content.replace(path, f'\n[IMAGE]{path}[/IMAGE]\n')
+                
                 yield content
         
         # 更新对话历史
@@ -88,7 +97,13 @@ class QASystem:
 
     def get_answer(self, user_question):
         context = self.rag.get_context(user_question)
-
+        response_text = ""
+        image_path = None
+        
+        # Check if there's an image path in the context
+        if context and "图片路径" in context and context["图片路径"]:
+            image_path = context["图片路径"]
+        
         messages = [
             {
                 "role": "system", 
@@ -99,15 +114,15 @@ class QASystem:
                             2. 重要信息用加粗显示
                             3. 如果是列举多个项目，使用编号或分点说明
                             4. 保持回答的简洁性和可读性
-                            5. 如果有补充说明，单独成段展示"""
+                            5. 如果有补充说明，单独成段展示
+                            6. 如果有相关图片，在回答末尾说明"我这里有相关图片可以为您展示"
+                            """
             },
             {
                 "role": "user", 
                 "content": f"相关资料：\n{context}\n\n用户问题:{user_question}\n\n请根据以上资料回答用户问题"
             }
         ]
-
-        print("\n用户提升：", messages[1]['content'])
 
         response = self.client.chat.completions.create(
             model = "deepseek-chat",
@@ -116,12 +131,11 @@ class QASystem:
             max_tokens=500,
             stream=True
         )
-
-        for chunk in response:
-            if chunk.choices[0].delta.content:
-                yield chunk.choices[0].delta.content
-
-        return response.choices[0].message.content
+        
+        return {
+            "text": response.choices[0].message.content,
+            "image_path": image_path
+        }
     
 qa_system = QASystem(API_KEY, BASE_URL)
 
@@ -130,7 +144,7 @@ async def ask(question: Question):
     async def generate():
         async for chunk in qa_system.get_answer_stream(question.question, question.session_id):
             yield chunk
-
+    
     return StreamingResponse(generate(), media_type='text/event-stream')
 
 @app.get("/")

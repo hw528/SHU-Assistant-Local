@@ -19,12 +19,20 @@ class RAGSystem:
         top_indices = similarities.argsort()[-top_k:][::-1]
 
         context = "以下是相关问答对：\n\n"
+        
+        # 收集所有图片路径
+        images = []
         for idx in top_indices:
             context += f"问:{self.questions[idx]}\n"
             context += f"答:{self.data[idx]['标准回答']}\n"
             if self.data[idx]['补充说明']:
                 context += f"补充：{self.data[idx]['补充说明']}\n"
-            context += "\n"
+            if self.data[idx]['图片路径']:
+                images.append(self.data[idx]['图片路径'])
+        
+        # 在文本末尾添加所有图片
+        for image_path in images:
+            context += f"\n[IMAGE]{image_path}[/IMAGE]"
 
         return context
             
