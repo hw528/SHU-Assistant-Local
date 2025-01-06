@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SHU 学习助手</title>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="css/chat.css">
+  <script src="https://aka.ms/csspeech/jsbrowserpackageraw"></script>
+</head>
+<body class="h-screen flex">
+  <div class="w-48 bg-white border-r flex flex-col items-center p-4 relative">
+    <div class="w-24 h-24 bg-gray-300 rounded-full mt-10 mb-3"></div>
+    <h1 class="text-xl text-teal-600 font-bold mt-5">SHU</h1>
+    <h2 class="text-lg text-teal-600 mb-4">生活学习助手</h2>
+    <button class="back-button">返回</button>
+  </div>
+
+  <div class="flex-1 flex flex-col">
+    <div class="flex flex-col flex-1 p-6 overflow-y-auto space-y-4">
+      <div class="flex items-start space-x-3">
+        <div class="avatar"></div>
+        <div class="message-bubble" style="background: white;">
+          Hi，我是SHU生活学习助手，我可以帮助你了解校内食堂信息、选课事项、教室使用和校园建筑分布等问题。
+          如果你有任何关于校园生活的疑问，随时告诉我！ 😊
+        </div>
+      </div>
+    </div>
+
+    <!-- Input Area -->
+    <div class="p-4 border-t bg-white">
+      <div class="chat-buttons">
+        <button>校园地图</button>
+        <button>食堂一览</button>
+        <button>校园风景一览</button>
+      </div>
+
+      <div class="chat-box">
+        <input type="text" class="chat-input" >
+        <button class="send-button">
+          <i class="fa-solid fa-paper-plane"></i>
+        </button>
+        <button class="mic-button">
+          <i class="fa-solid fa-microphone"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+<script src="js/chat.js"></script>
+</body>
+</html>

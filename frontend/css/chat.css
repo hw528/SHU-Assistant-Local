@@ -1,0 +1,220 @@
+body {
+    background-color: #ffffff;
+    font-family: "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+}
+
+.chat-box {
+    display: flex;
+    align-items: center;
+    margin: 20px;
+    position: relative;
+    width: 90%;
+    background: white;
+    border-radius: 30px;
+    padding: 10px 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.chat-input {
+    flex: 1;
+    padding: 15px;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    background: transparent;
+    font-family: "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+}
+
+.send-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    margin-left: 10px;
+}
+
+.mic-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    margin-left: 5px;
+}
+
+.chat-buttons {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+    margin-left: 20px;
+}
+
+.chat-buttons button {
+    background: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 25px;
+    color: #333;
+    font-size: 14px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+}
+
+.send-button:hover {
+  color: #338f82;  /* 悬停时的颜色变化 */
+}
+
+.mic-button:hover {
+  color: #338f82;  /* 悬停时的颜色变化 */
+}
+
+.chat-buttons button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.back-button {
+  position: absolute;
+  bottom: 37px;
+  width: 80%;  /* 减小宽度 */
+  padding: 15px;  /* 减小内边距 */
+  background: #00B894;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  font-size: 16px;  /* 减小字体 */
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.back-button:hover {
+    background: #00a383;  /* 悬停时的颜色 */
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* 消息容器基础样式 */
+.message-container {
+    display: flex;
+    margin: 20px 0;
+    width: 100%;
+    position: relative;
+}
+
+/* 消息气泡基础样式 */
+.message-bubble {
+    background: white;
+    padding: 10px 20px;
+    border-radius: 15px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    max-width: 80%;
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+/* 用户消息样式 */
+.user-message {
+    justify-content: flex-end;
+    padding-right: 50px;
+    padding-left: 120px;
+}
+
+/* 机器人消息容器样式 */
+.flex-1 > .flex-col > .flex.items-start.space-x-3 {
+  padding-left: 0 !important;   /* 使用更具体的选择器并添加 !important */
+  margin-left: 0 !important;
+}
+
+/* Markdown 样式 */
+.message-bubble strong {
+    color: #338f82;
+    font-weight: 600;
+}
+
+.message-bubble ol {
+    list-style-type: decimal;
+    margin-left: 1.5em;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+
+.message-bubble li {
+    margin-bottom: 0.5em;
+    line-height: 1.6;
+}
+
+.message-bubble p {
+    margin-bottom: 0.5em;
+}
+/* 用户消息容器 */
+.flex.items-start.space-x-3 {
+    display: flex;
+    align-items: flex-start;
+    margin: 20px 0;
+    margin-left: 40px;  /* 调整用户消息的左边距 */
+}
+
+/* AI头像调整 */
+.w-10.h-10.bg-gray-300.rounded-full {
+    margin-left: 20px;  /* 调整AI头像的左边距 */
+}
+
+.message-actions {
+    position: absolute;
+    bottom: -35px;
+    left: 60px;
+    right: 0;
+    display: none;
+    justify-content: flex-start;
+    gap: 10px;
+    padding: 5px;
+    background: transparent;
+    border: none;
+}
+
+.message-container:hover .message-actions {
+    display: flex;
+}
+
+.message-actions .action-button {
+    padding: 4px 3px;
+    border: none;
+    background: none;
+    color: #848484 !important;
+    font-size: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.2s;
+}
+
+.message-actions .action-button:hover {
+    color: #338f82;
+}
+
+.message-actions .action-button i {
+    font-size: 14px;
+} 
+
+.hover-area {
+  position: relative;
+  display: inline-block;
+  padding-bottom: 40px;  /* 向下延伸覆盖操作按钮区域 */
+  margin-bottom: -40px;  /* 补偿padding-bottom造成的空间 */
+}
+
+.hover-area:hover .message-actions {
+    display: flex;
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #ccc;
+    margin-right: 12px;
+    flex-shrink: 0;
+}
