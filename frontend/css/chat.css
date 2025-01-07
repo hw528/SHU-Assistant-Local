@@ -218,3 +218,65 @@ body {
     margin-right: 12px;
     flex-shrink: 0;
 }
+
+.image-preview-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.image-preview-item {
+    width: 120px;
+    text-align: center;
+}
+
+.preview-image {
+    width: 120px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.preview-image:hover {
+    transform: scale(1.05);
+}
+
+.image-caption {
+    font-size: 12px;
+    color: #666;
+    margin-top: 5px;
+}
+
+/* 大图预览模态框 */
+.image-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    max-width: 90%;
+    max-height: 90%;
+}
+
+.modal-content img {
+    max-width: 100%;
+    max-height: 90vh;
+    object-fit: contain;
+}
+
+.modal-caption {
+    color: white;
+    text-align: center;
+    margin-top: 10px;
+}

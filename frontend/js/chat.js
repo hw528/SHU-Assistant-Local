@@ -13,13 +13,9 @@ const speechConfig = SpeechSDK.SpeechConfig.fromSubscription(
 speechConfig.speechSynthesisVoiceName = "zh-CN-XiaoxiaoNeural";
 speechConfig.speechSynthesisLanguage = "zh-CN";
 
-// 在文件顶部添加调试信息
-console.log("chat.js 加载");
-
 // 创建消息操作按钮函数
 function createMessageActions(messageDiv, bubble, originalQuestion) {
-    console.log("创建消息操作按钮");
-    
+
     // 创建操作按钮容器
     const actionsDiv = document.createElement('div');
     actionsDiv.className = 'message-actions';
@@ -135,33 +131,50 @@ function createMessageActions(messageDiv, bubble, originalQuestion) {
                     try {
                         // 检查是否包含图片标记
                         if (accumulatedText.includes('[IMAGE]')) {
+                            // 创建图片缓冲区
+                            let imageBuffer = [];
+                            
                             // 分割文本和图片标记
                             const parts = accumulatedText.split(/\[IMAGE\](.*?)\[\/IMAGE\]/);
-                            let newHtml = '';
+                            let textContent = '';
                             
+                            // 处理所有部分
                             for (let i = 0; i < parts.length; i++) {
                                 if (i % 2 === 0) {
-                                    // 普通文本部分
-                                    newHtml += marked.parse(parts[i]);
+                                    // 文本部分直接添加
+                                    textContent += parts[i];
                                 } else {
-                                    // 图片路径部分
-                                    const imgElement = document.createElement('img');
-                                    // 修改图片路径，指向本地images目录
+                                    // 图片部分存入缓冲区
                                     const localPath = parts[i].replace('企创图片资料', 'images/企创图片资料');
-                                    imgElement.src = localPath;
-                                    imgElement.alt = "Related image";
-                                    imgElement.style.maxWidth = "100%";
-                                    imgElement.style.marginTop = "10px";
-                                    imgElement.style.marginBottom = "10px";
-                                    newHtml += imgElement.outerHTML;
+                                    const imageName = parts[i].split('/').pop().replace('.jpg', '');
+                                    imageBuffer.push({ path: localPath, name: imageName });
                                 }
                             }
-                            newBubble.innerHTML = newHtml;
+                            
+                            // 先显示所有文本
+                            let newHtml = marked.parse(textContent);
+                            
+                            // 如果有图片，在文本末尾添加图片预览区
+                            if (imageBuffer.length > 0) {
+                                newHtml += '<div class="image-preview-container">';
+                                imageBuffer.forEach(img => {
+                                    newHtml += `
+                                        <div class="image-preview-item">
+                                            <img src="${img.path}" alt="${img.name}" 
+                                                 onclick="showFullImage('${img.path}', '${img.name}')"
+                                                 class="preview-image">
+                                            <div class="image-caption">${img.name}</div>
+                                        </div>`;
+                                });
+                                newHtml += '</div>';
+                            }
+                            
+                            bubble.innerHTML = newHtml;
                         } else {
-                            newBubble.innerHTML = marked.parse(accumulatedText);
+                            bubble.innerHTML = marked.parse(accumulatedText);
                         }
                     } catch (e) {
-                        newBubble.textContent = accumulatedText;
+                        bubble.textContent = accumulatedText;
                     }
                     
                     chatContainer.scrollTop = chatContainer.scrollHeight;
@@ -176,7 +189,6 @@ function createMessageActions(messageDiv, bubble, originalQuestion) {
     const speakBtn = document.createElement('button');
     speakBtn.className = 'action-button';
     speakBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i>';
-    console.log("语音按钮创建完成");
     
     let speaking = false;
     let synthesizer = null;
@@ -184,20 +196,16 @@ function createMessageActions(messageDiv, bubble, originalQuestion) {
     // 初始化语音配置
 // 按钮点击事件
 speakBtn.onclick = async () => {
-    console.log("语音按钮被点击");
     if (speaking) {
-        console.log("停止播放");
         if (synthesizer) {
             synthesizer.stopSpeakingAsync(
                 () => {
-                    console.log("播放已停止");
                     speaking = false;
                     speakBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i>';
                     synthesizer.close();
                     synthesizer = null;
                 },
                 error => {
-                    console.error("停止失败:", error);
                     speaking = false;
                     speakBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i>';
                     if (synthesizer) {
@@ -212,7 +220,6 @@ speakBtn.onclick = async () => {
         }
     } else {
         // 开始播放
-        console.log("开始播放");
         try {
             // 创建新的语音合成器实例
             const audioConfig = SpeechSDK.AudioConfig.fromDefaultSpeakerOutput();
@@ -220,7 +227,6 @@ speakBtn.onclick = async () => {
             speaking = true;
             speakBtn.innerHTML = '<i class="fa-solid fa-stop"></i>';
 
-            console.log("尝试播放文本:", bubble.textContent);
             // 添加事件监听
             synthesizer.synthesisStarted = () => {
                 console.log("语音播放开始");
@@ -231,7 +237,6 @@ speakBtn.onclick = async () => {
             };
 
             synthesizer.synthesisCanceled = (s, e) => {
-                console.log("语音播放被取消");
                 synthesizer.close(); // 确保释放资源
                 synthesizer = null;
                 speaking = false;
@@ -239,7 +244,6 @@ speakBtn.onclick = async () => {
             };
 
             synthesizer.synthesisEnded = () => {
-                console.log("语音播放结束");
                 if (speaking) {
                     speaking = false;
                     speakBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i>';
@@ -252,7 +256,6 @@ speakBtn.onclick = async () => {
             await synthesizer.speakTextAsync(
                 bubble.textContent,
                 result => {
-                    console.log("语音合成成功");
                 },
                 error => {
                     console.error("语音播放错误:", error);
@@ -263,7 +266,6 @@ speakBtn.onclick = async () => {
                 }
             );
         } catch (error) {
-            console.error("语音合成失败:", error);
             speaking = false;
             speakBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i>';
             if (synthesizer) {
@@ -274,7 +276,6 @@ speakBtn.onclick = async () => {
     }
 };
 
-    console.log("添加按钮到操作区");
     actionsDiv.appendChild(copyBtn);
     actionsDiv.appendChild(regenerateBtn);
     actionsDiv.appendChild(speakBtn);
@@ -345,6 +346,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 chatContainer.appendChild(messageDiv);
 
                 let accumulatedText = new TextDecoder().decode(firstChunk.value);
+                
+               // 在处理流式响应的部分添加调试日志
+                if (accumulatedText.includes('[IMAGE]')) {
+                    const parts = accumulatedText.split(/\[IMAGE\](.*?)\[\/IMAGE\]/);
+                }
+
                 try {
                     bubble.innerHTML = marked.parse(accumulatedText);
                 } catch (e) {
@@ -362,27 +369,44 @@ document.addEventListener('DOMContentLoaded', () => {
                     try {
                         // 检查是否包含图片标记
                         if (accumulatedText.includes('[IMAGE]')) {
+                            // 创建图片缓冲区
+                            let imageBuffer = [];
+                            
                             // 分割文本和图片标记
                             const parts = accumulatedText.split(/\[IMAGE\](.*?)\[\/IMAGE\]/);
-                            let newHtml = '';
+                            let textContent = '';
                             
+                            // 处理所有部分
                             for (let i = 0; i < parts.length; i++) {
                                 if (i % 2 === 0) {
-                                    // 普通文本部分
-                                    newHtml += marked.parse(parts[i]);
+                                    // 文本部分直接添加
+                                    textContent += parts[i];
                                 } else {
-                                    // 图片路径部分
-                                    const imgElement = document.createElement('img');
-                                    // 修改图片路径，指向本地images目录
+                                    // 图片部分存入缓冲区
                                     const localPath = parts[i].replace('企创图片资料', 'images/企创图片资料');
-                                    imgElement.src = localPath;
-                                    imgElement.alt = "Related image";
-                                    imgElement.style.maxWidth = "100%";
-                                    imgElement.style.marginTop = "10px";
-                                    imgElement.style.marginBottom = "10px";
-                                    newHtml += imgElement.outerHTML;
+                                    const imageName = parts[i].split('/').pop().replace('.jpg', '');
+                                    imageBuffer.push({ path: localPath, name: imageName });
                                 }
                             }
+                            
+                            // 先显示所有文本
+                            let newHtml = marked.parse(textContent);
+                            
+                            // 如果有图片，在文本末尾添加图片预览区
+                            if (imageBuffer.length > 0) {
+                                newHtml += '<div class="image-preview-container">';
+                                imageBuffer.forEach(img => {
+                                    newHtml += `
+                                        <div class="image-preview-item">
+                                            <img src="${img.path}" alt="${img.name}" 
+                                                 onclick="showFullImage('${img.path}', '${img.name}')"
+                                                 class="preview-image">
+                                            <div class="image-caption">${img.name}</div>
+                                        </div>`;
+                                });
+                                newHtml += '</div>';
+                            }
+                            
                             bubble.innerHTML = newHtml;
                         } else {
                             bubble.innerHTML = marked.parse(accumulatedText);
@@ -414,3 +438,19 @@ document.addEventListener('DOMContentLoaded', () => {
         window.location.href = 'index.html';
     });
 });
+
+// 添加在文件末尾
+function showFullImage(imagePath, caption) {
+    const modal = document.getElementById('imageModal');
+    const modalImg = document.getElementById('modalImage');
+    const modalCaption = document.getElementById('modalCaption');
+    
+    modalImg.src = imagePath;
+    modalCaption.textContent = caption;
+    modal.style.display = 'flex';
+    
+    // 点击模态框任意位置关闭
+    modal.onclick = function() {
+        modal.style.display = 'none';
+    };
+}

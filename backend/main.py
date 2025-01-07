@@ -31,19 +31,23 @@ class QASystem:
         if session_id not in self.conversation_history:
             self.conversation_history[session_id] = []
         
-        context = self.rag.get_context(user_question)
+        context, has_images = self.rag.get_context(user_question)
         
         # 构建完整的对话历史
         messages = [
             {
                 "role": "system", 
                 "content": """你是上海大学的智能助手。请根据提供的相关问题对来回答用户问题，如果问题超出相关问答对的范围，请说明无法回答。
+                            
                             回答要求：
                             1. 使用清晰的段落和标点符号
                             2. 重要信息用加粗显示
                             3. 如果是列举多个项目，使用编号或分点说明
                             4. 保持回答的简洁性和可读性
-                            5. 如果有补充说明，单独成段展示"""
+                            5. 如果有补充说明，单独成段展示
+                            6. 如果资料中包含[IMAGE]标记的图片，请判断哪些图片与回答相关，将相关图片的完整标记（包括[IMAGE]和[/IMAGE]）原样加在回答末尾，
+                               并在最后添加一句："我为您准备了相关的环境照片，您可以在下方缩略图查看。"
+                            """
             }
         ]
         
@@ -53,8 +57,10 @@ class QASystem:
         # 添加当前问题和上下文
         messages.append({
             "role": "user",
-            "content": f"相关资料：\n{context}\n\n用户问题:{user_question}\n\n请根据以上资料回答用户问题"
+            "content": f"是否包含图片：{has_images}\n相关资料：\n{context}\n\n用户问题:{user_question}\n\n请根据以上资料回答用户问题,注意处理资料中的图片标记"
         })
+
+        print(f"Debug - Messages: {messages}")  # 添加调试信息
 
         response = self.client.chat.completions.create(
             model="deepseek-chat",
@@ -70,17 +76,7 @@ class QASystem:
             if chunk.choices[0].delta.content:
                 content = chunk.choices[0].delta.content
                 full_response += content
-                
-                # 检查是否包含图片路径，如果有则插入特殊标记
-                if "企创图片资料" in content:
-                    import re
-                    paths = re.findall(r'企创图片资料/[^，。\s]+\.jpg', content)
-                    for path in paths:
-                        # 在提到图片路径的地方插入特殊标记
-                        content = content.replace(path, f'\n[IMAGE]{path}[/IMAGE]\n')
-                
                 yield content
-        
         # 更新对话历史
         self.conversation_history[session_id].append({
             "role": "user",
@@ -94,48 +90,6 @@ class QASystem:
         # 保持历史记录在合理范围内（最近5轮对话）
         if len(self.conversation_history[session_id]) > 10:
             self.conversation_history[session_id] = self.conversation_history[session_id][-10:]
-
-    def get_answer(self, user_question):
-        context = self.rag.get_context(user_question)
-        response_text = ""
-        image_path = None
-        
-        # Check if there's an image path in the context
-        if context and "图片路径" in context and context["图片路径"]:
-            image_path = context["图片路径"]
-        
-        messages = [
-            {
-                "role": "system", 
-                "content": """你是上海大学的智能助手。请根据提供的相关问题对来回答用户问题，如果问题超出相关问答对的范围，请说明无法回答。
-
-                            回答要求：
-                            1. 使用清晰的段落和标点符号
-                            2. 重要信息用加粗显示
-                            3. 如果是列举多个项目，使用编号或分点说明
-                            4. 保持回答的简洁性和可读性
-                            5. 如果有补充说明，单独成段展示
-                            6. 如果有相关图片，在回答末尾说明"我这里有相关图片可以为您展示"
-                            """
-            },
-            {
-                "role": "user", 
-                "content": f"相关资料：\n{context}\n\n用户问题:{user_question}\n\n请根据以上资料回答用户问题"
-            }
-        ]
-
-        response = self.client.chat.completions.create(
-            model = "deepseek-chat",
-            messages=messages,
-            temperature=1.3,
-            max_tokens=500,
-            stream=True
-        )
-        
-        return {
-            "text": response.choices[0].message.content,
-            "image_path": image_path
-        }
     
 qa_system = QASystem(API_KEY, BASE_URL)
 
