@@ -51,7 +51,12 @@ cp .env.example .env
 
 4. Run the application
 ```bash
-python backend/main.py
+cd SHU-Assistant-Local
+uvicorn backend.main:app --reload
+
+#another terminal
+cd frontend
+python3 -m http.server 3000
 ```
 
 ## Usage
