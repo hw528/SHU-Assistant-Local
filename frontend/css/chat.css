@@ -109,9 +109,12 @@ body {
     padding: 10px 20px;
     border-radius: 15px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    max-width: 80%;
+    width: fit-content;  /* 改为自适应内容宽度 */
+    max-width: 75%;     /* 稍微增加最大宽度 */
     font-size: 15px;
     line-height: 1.5;
+    word-wrap: break-word;      /* 添加自动换行 */
+    overflow-wrap: break-word;  /* 确保长单词也能换行 */
 }
 
 /* 用户消息样式 */
@@ -123,8 +126,9 @@ body {
 
 /* 机器人消息容器样式 */
 .flex-1 > .flex-col > .flex.items-start.space-x-3 {
-  padding-left: 0 !important;   /* 使用更具体的选择器并添加 !important */
-  margin-left: 0 !important;
+    padding-left: 0 !important;
+    margin-left: 0 !important;
+    width: auto;  /* 让容器宽度自适应内容 */
 }
 
 /* Markdown 样式 */

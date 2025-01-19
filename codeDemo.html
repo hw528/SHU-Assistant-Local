@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Highlight.js Demo</title>
+    <!-- Highlight.js Default Theme -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/default.min.css">
+</head>
+<body>
+    <!-- 代码块 -->
+    <pre><code class="language-javascript">
+    // JavaScript Example
+    const greet = () => {
+        console.log("Hello, World!");
+    };
+    greet();
+    </code></pre>
+
+    <!-- Highlight.js Core Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <!-- 初始化 Highlight.js -->
+    <script>
+        document.addEventListener("DOMContentLoaded", (event) => {
+            hljs.highlightAll();
+        });
+    </script>
+</body>
+</html>

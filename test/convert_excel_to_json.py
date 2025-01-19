@@ -26,7 +26,7 @@ def excel_to_json(excel_file, json_file):
         print(f"发生错误: {str(e)}")
 
 if __name__ == "__main__":
-    excel_file = "test/问题1.2版.xlsx"
-    json_file = "output.json"
+    excel_file = "test/补充数据1.9.xlsx"
+    json_file = "output1.json"
     
     excel_to_json(excel_file, json_file) 
