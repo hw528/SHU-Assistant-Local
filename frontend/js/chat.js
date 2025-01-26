@@ -15,60 +15,72 @@ speechConfig.speechSynthesisLanguage = "zh-CN";
 
 // 创建消息操作按钮函数
 function createMessageActions(messageDiv, bubble, originalQuestion) {
-
     // 创建操作按钮容器
     const actionsDiv = document.createElement('div');
     actionsDiv.className = 'message-actions';
     
-    // 创建消息内容容器（包含气泡和操作按钮）
-    const contentContainer = document.createElement('div');
-    contentContainer.style.cssText = `
-        display: flex;
-        flex-direction: column;
-        flex: 1;
-    `;
+    // 创建复制按钮
+    const copyBtn = document.createElement('button');
+    copyBtn.className = 'action-button';
+    copyBtn.innerHTML = '<i class="fa-regular fa-copy"></i>';
     
-    // 创建悬停区域（只包裹气泡）
+    // 创建重新生成按钮
+    const regenerateBtn = document.createElement('button');
+    regenerateBtn.className = 'action-button';
+    regenerateBtn.innerHTML = '<i class="fa-solid fa-sync-alt"></i>';
+
+    // 创建语音按钮
+    const speakBtn = document.createElement('button');
+    speakBtn.className = 'action-button';
+    speakBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i>';
+
+    // 添加按钮到操作区
+    actionsDiv.appendChild(copyBtn);
+    actionsDiv.appendChild(regenerateBtn);
+    actionsDiv.appendChild(speakBtn);
+    
+    // 创建悬停区域
     const hoverArea = document.createElement('div');
     hoverArea.className = 'hover-area';
-    hoverArea.style.cssText = `
-        position: relative;
-        display: inline-block;
-    `;
-    
-    // 修改头像样式
-    const avatar = messageDiv.querySelector('.w-10.h-10');
-    if (avatar) {
-        avatar.className = 'avatar';
-    }
     
     // 重新组织 DOM 结构
     const bubbleParent = bubble.parentNode;
     if (bubbleParent) {
         bubbleParent.removeChild(bubble);
         hoverArea.appendChild(bubble);
-        contentContainer.appendChild(hoverArea);
-        contentContainer.appendChild(actionsDiv);
-        bubbleParent.appendChild(contentContainer);
+        hoverArea.appendChild(actionsDiv);
+        bubbleParent.appendChild(hoverArea);
     }
     
-    // 复制按钮
-    const copyBtn = document.createElement('button');
-    copyBtn.className = 'action-button';
-    copyBtn.innerHTML = '<i class="fa-regular fa-copy"></i>';
-    copyBtn.onclick = () => {
-        navigator.clipboard.writeText(bubble.textContent);
-        // 显示复制成功提示
-        copyBtn.innerHTML = '<i class="fa-solid fa-check"></i>';
-        setTimeout(() => {
-            copyBtn.innerHTML = '<i class="fa-regular fa-copy"></i>';
-        }, 2000);
+    // 添加复制功能
+    copyBtn.onclick = async () => {
+        try {
+            const textToCopy = bubble.innerText || bubble.textContent;
+            
+            // 使用传统的复制方法作为后备
+            const textarea = document.createElement('textarea');
+            textarea.value = textToCopy;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            
+            // 显示复制成功提示
+            copyBtn.innerHTML = '<i class="fa-solid fa-check"></i>';
+            console.log('Text copied successfully');
+            
+            setTimeout(() => {
+                copyBtn.innerHTML = '<i class="fa-regular fa-copy"></i>';
+            }, 2000);
+        } catch (err) {
+            console.error('Failed to copy text:', err);
+        }
     };
     
-    // 重新生成按钮
-    const regenerateBtn = document.createElement('button');
-    regenerateBtn.className = 'action-button';
-    regenerateBtn.innerHTML = '<i class="fa-solid fa-rotate"></i>';
+    // 添加重新生成功能
     regenerateBtn.onclick = async () => {
         // 移除当前回复
         messageDiv.remove();
@@ -89,107 +101,53 @@ function createMessageActions(messageDiv, bubble, originalQuestion) {
                 throw new Error('Network response was not ok');
             }
 
+            // 创建新的消息容器
+            const newMessageDiv = document.createElement('div');
+            newMessageDiv.className = 'flex items-start space-x-3 message-container';
+            
+            const avatarDiv = document.createElement('div');
+            avatarDiv.className = 'avatar';
+            const avatarImg = document.createElement('img');
+            avatarImg.src = 'images/avatar.png';
+            avatarImg.alt = 'logo';
+            avatarDiv.appendChild(avatarImg);
+            
+            const bubble = document.createElement('div');
+            bubble.className = 'message-bubble';
+            
+            newMessageDiv.appendChild(avatarDiv);
+            newMessageDiv.appendChild(bubble);
+            chatContainer.appendChild(newMessageDiv);
+
+            // 读取流式响应
             const reader = response.body.getReader();
-            let firstChunk = await reader.read();
+            let accumulatedText = '';
 
-            if (!firstChunk.done && firstChunk.value) {
-                // 创建新的消息容器
-                const newMessageDiv = document.createElement('div');
-                newMessageDiv.className = 'flex items-start space-x-3 message-container';
+            while (true) {
+                const {done, value} = await reader.read();
+                if (done) break;
                 
-                const avatarDiv = document.createElement('div');
-                avatarDiv.className = 'w-10 h-10 bg-gray-300 rounded-full';
+                const text = new TextDecoder().decode(value);
+                accumulatedText += text;
                 
-                const newBubble = document.createElement('div');
-                newBubble.className = 'message-bubble';
-                
-                newMessageDiv.appendChild(avatarDiv);
-                newMessageDiv.appendChild(newBubble);
-                
-                // 添加新的消息操作按钮
-                const newActionsDiv = createMessageActions(newMessageDiv, newBubble, originalQuestion);
-                newMessageDiv.appendChild(newActionsDiv);
-                
-                chatContainer.appendChild(newMessageDiv);
-
-                // 处理第一个数据块
-                let accumulatedText = new TextDecoder().decode(firstChunk.value);
                 try {
-                    newBubble.innerHTML = marked.parse(accumulatedText);
+                    bubble.innerHTML = marked.parse(accumulatedText);
                 } catch (e) {
-                    newBubble.textContent = accumulatedText;
+                    bubble.textContent = accumulatedText;
                 }
-
-                // 继续读取剩余数据
-                while (true) {
-                    const {done, value} = await reader.read();
-                    if (done) break;
-                    
-                    const text = new TextDecoder().decode(value);
-                    accumulatedText += text;
-                    
-                    try {
-                        // 检查是否包含图片标记
-                        if (accumulatedText.includes('[IMAGE]')) {
-                            // 创建图片缓冲区
-                            let imageBuffer = [];
-                            
-                            // 分割文本和图片标记
-                            const parts = accumulatedText.split(/\[IMAGE\](.*?)\[\/IMAGE\]/);
-                            let textContent = '';
-                            
-                            // 处理所有部分
-                            for (let i = 0; i < parts.length; i++) {
-                                if (i % 2 === 0) {
-                                    // 文本部分直接添加
-                                    textContent += parts[i];
-                                } else {
-                                    // 图片部分存入缓冲区
-                                    const localPath = parts[i].replace('企创图片资料', 'images/企创图片资料');
-                                    const imageName = parts[i].split('/').pop().replace('.jpg', '');
-                                    imageBuffer.push({ path: localPath, name: imageName });
-                                }
-                            }
-                            
-                            // 先显示所有文本
-                            let newHtml = marked.parse(textContent);
-                            
-                            // 如果有图片，在文本末尾添加图片预览区
-                            if (imageBuffer.length > 0) {
-                                newHtml += '<div class="image-preview-container">';
-                                imageBuffer.forEach(img => {
-                                    newHtml += `
-                                        <div class="image-preview-item">
-                                            <img src="${img.path}" alt="${img.name}" 
-                                                 onclick="showFullImage('${img.path}', '${img.name}')"
-                                                 class="preview-image">
-                                            <div class="image-caption">${img.name}</div>
-                                        </div>`;
-                                });
-                                newHtml += '</div>';
-                            }
-                            
-                            bubble.innerHTML = newHtml;
-                        } else {
-                            bubble.innerHTML = marked.parse(accumulatedText);
-                        }
-                    } catch (e) {
-                        bubble.textContent = accumulatedText;
-                    }
-                    
-                    chatContainer.scrollTop = chatContainer.scrollHeight;
-                }
+                
+                chatContainer.scrollTop = chatContainer.scrollHeight;
             }
+
+            // 完成后添加操作按钮
+            const actionsDiv = createMessageActions(newMessageDiv, bubble, originalQuestion);
+            newMessageDiv.appendChild(actionsDiv);
+
         } catch (error) {
             console.error('Error:', error);
         }
     };
 
-    // 语音按钮
-    const speakBtn = document.createElement('button');
-    speakBtn.className = 'action-button';
-    speakBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i>';
-    
     let speaking = false;
     let synthesizer = null;
     
@@ -276,10 +234,6 @@ speakBtn.onclick = async () => {
     }
 };
 
-    actionsDiv.appendChild(copyBtn);
-    actionsDiv.appendChild(regenerateBtn);
-    actionsDiv.appendChild(speakBtn);
-    
     return actionsDiv;
 }
 
@@ -332,7 +286,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 messageDiv.className = 'flex items-start space-x-3 message-container';
                 
                 const avatarDiv = document.createElement('div');
-                avatarDiv.className = 'w-10 h-10 bg-gray-300 rounded-full';
+                avatarDiv.className = 'avatar';
+                const avatarImg = document.createElement('img');
+                avatarImg.src = 'images/avatar.png';
+                avatarImg.alt = 'logo';
+                avatarDiv.appendChild(avatarImg);
                 
                 const bubble = document.createElement('div');
                 bubble.className = 'message-bubble';

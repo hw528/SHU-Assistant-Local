@@ -1,3 +1,33 @@
+@font-face {
+    font-family: '金山云技术体';
+    src: url('../fonts/金山云技术体.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'msyahei';
+    src: url('../fonts/msyahei.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: '雅酷黑45';
+    src: url('../fonts/雅酷黑45.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: '雅酷黑65';
+    src: url('../fonts/雅酷黑65.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'WPS灵秀黑';
+    src: url('../fonts/WPS灵秀黑.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: '雅酷黑简';
+    src: url('../fonts/雅酷黑简.ttf') format('truetype');
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -19,35 +49,44 @@ body {
 }
 
 .welcome-text {
-    color: #41AD9D;
-    font-size: 1.2em;
-    padding: 10px 17px 10px 25px;    
+    position: absolute;  /* 添加绝对定位 */
+    top: 1em;           /* 距离顶部距离 */
+    left: 4em;          /* 距离左侧距离 */
+    color: white;
+    font-family: '金山云技术体';
+    font-size: 1.9em;
+    padding-left: 10px;
     background: transparent;
     border-radius: 30px;
-    margin-bottom: 40px;
-    border: 1px solid #41AD9D;
+    letter-spacing: 1px;
 }
 
 .header {
+    color: white;
+    font-family: '金山云技术体';
     text-align: center;
     padding: 2px;
-    max-width: 800px;
+    max-width: 80%;
     margin-bottom: 40px;
 }
 
 .header h1 {
-    color: #333;
-    font-size: 3.0em;
+    font-family: 'WPS灵秀黑';
+    color: white;
+    font-size: 5em;
     margin-bottom: 20px;
     font-weight: bold;
+    letter-spacing: 1px;
 }
 
 .subtitle {
-    color: #666;
-    font-size: 1.1em;
+    font-family: '金山云技术体';
+    color: white;
+    font-size: 2em;
     line-height: 1.6;
+    letter-spacing: 1px;
     margin: 0 auto 40px;
-    max-width: 600px;
+    max-width: 80%;
 }
 
 .button-container {
@@ -61,20 +100,44 @@ body {
 }
 
 .start-button {
-    background-color: #41AD9D;
-    border: none;
-    padding: 13px 27px;
-    border-radius: 25px;
+    position: absolute;
+    bottom: 16vh;
+    font-family: 'msyahei';
+    background-color: transparent;
+    border: 3px solid white;
+    padding: 11px 13px;
+    padding-bottom: 4.3px;
+    padding-top: 4.3px;
+    border-radius: 10px;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(65, 173, 157, 0.2);
     color: white;
-    font-size: 1.11em;
+    font-size: 2em;
     font-weight: 400;
+    letter-spacing: 1.1px;
+    left: 45%;
 }
 
 .start-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(65, 173, 157, 0.3);
-    background-color: #3a9c8d;
+    transform: translateY(-2px)translateX(2px);
+    box-shadow: 0 6px 20px rgba(255, 255, 255, 0.3);
+    background-color: transparent;
+}
+
+.avatar {
+    background-color: transparent;
+    flex-shrink: 0;
+    position: absolute;
+    top: 0em;
+    left: 1em;
+    width: 6rem;
+    height: 6rem;
+    border-radius: 9999px;
+}
+
+.avatar img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
 }

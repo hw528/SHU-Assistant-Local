@@ -11,17 +11,31 @@
   <script src="https://aka.ms/csspeech/jsbrowserpackageraw"></script>
 </head>
 <body class="h-screen flex">
-  <div class="w-48 bg-white border-r flex flex-col items-center p-4 relative">
-    <div class="w-24 h-24 bg-gray-300 rounded-full mt-10 mb-3"></div>
-    <h1 class="text-xl text-teal-600 font-bold mt-5">SHU</h1>
-    <h2 class="text-lg text-teal-600 mb-4">生活学习助手</h2>
-    <button class="back-button">返回</button>
+  <div class="sidebar">
+    <h1>
+      <span>智</span>
+      <span>悦</span>
+      <span>小</span>
+      <span>泮</span>
+    </h1>
+
+    <button class="back-button">
+      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="20" cy="20" r="18" stroke="rgb(98, 166, 232)" stroke-width="3.9"/>
+          <path d="M23 14L17 20L23 26" stroke="rgb(98, 166, 232)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+
   </div>
 
   <div class="flex-1 flex flex-col">
     <div class="flex flex-col flex-1 p-6 overflow-y-auto space-y-4">
       <div class="flex items-start space-x-3">
-        <div class="avatar"></div>
+
+            <div class="avatar">
+              <img src="images/avatar.png" alt="logo">
+            </div>
+
         <div class="message-bubble" style="background: white;">
           Hi，我是SHU生活学习助手，我可以帮助你了解校内食堂信息、选课事项、教室使用和校园建筑分布等问题。
           如果你有任何关于校园生活的疑问，随时告诉我！ 😊
@@ -30,11 +44,19 @@
     </div>
 
     <!-- Input Area -->
-    <div class="p-4 border-t bg-white">
       <div class="chat-buttons">
-        <button>校园地图</button>
-        <button>食堂一览</button>
-        <button>校园风景一览</button>
+        <button>
+            <i class="fas fa-map-marked-alt"></i>
+            校园地图
+        </button>
+        <button>
+            <i class="fas fa-utensils"></i>
+            食堂一览
+        </button>
+        <button>
+            <i class="fas fa-image"></i>
+            校园风景一览
+        </button>
       </div>
 
       <div class="chat-box">
@@ -47,7 +69,6 @@
         </button>
       </div>
     </div>
-  </div>
 <script src="js/chat.js"></script>
 <div class="image-modal" id="imageModal">
     <div class="modal-content">
