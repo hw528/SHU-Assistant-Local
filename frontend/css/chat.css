@@ -1,12 +1,12 @@
 @font-face {
     font-family: "雅酷黑45";
-    src: url("../fonts/雅酷黑45.ttf") format("truetype");
+    src: url("https://shu-assistant.obs.cn-east-3.myhuaweicloud.com/fonts/%E9%9B%85%E9%85%B7%E9%BB%9145.ttf") format("truetype");
 }
 
 body {
     background-color: #ffffff;
     font-family: "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
-    background: url('../images/background-chat.webp');
+    background: url('https://shu-assistant.obs.cn-east-3.myhuaweicloud.com/images/background-chat.webp');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;

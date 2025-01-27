@@ -21,5 +21,6 @@ def update_image_paths(json_file):
         json.dump(data, f, ensure_ascii=False, indent=4)
 
 # 使用脚本
-json_file = 'data/output.json'
+json_file = 'output-final.json'
 update_image_paths(json_file)
+print("图片路径更新完成")
