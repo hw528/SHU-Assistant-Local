@@ -42,13 +42,6 @@ body {
     margin-left: 10px;
 }
 
-.mic-button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 10px;
-    margin-left: 5px;
-}
 
 .chat-buttons {
     display: flex;
@@ -89,10 +82,6 @@ body {
 }
 
 .send-button:hover {
-  color: rgb(59, 154, 231);  /* 悬停时的颜色变化 */
-}
-
-.mic-button:hover {
   color: rgb(59, 154, 231);  /* 悬停时的颜色变化 */
 }
 
