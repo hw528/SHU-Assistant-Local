@@ -376,3 +376,155 @@ body {
     flex-direction: column;
     height: 100%;
 }
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.7);
+    z-index: 1000;
+}
+
+.map-modal-content {
+    position: relative;
+    background-color: #fff;
+    margin: 2% auto;
+    width: 90%;
+    height: 90%;  /* 设置高度为屏幕的80% */
+    border-radius: 10px;
+    position: absolute;  /* 使用绝对定位 */
+    top: 50%;          /* 从顶部偏移50% */
+    left: 50%;         /* 从左侧偏移50% */
+    transform: translate(-50%, -55%);  /* 使用transform实现完美居中 */
+}
+
+.map-modal-content img {
+    width: 100%;
+    height: 100%;  /* 图片填充整个容器 */
+    object-fit: contain;  /* 保持图片比例 */
+    border-radius: 8px;
+}
+
+.article-content {
+    padding: 0;
+    overflow: hidden;
+}
+
+.article-header {
+    position: relative;
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+}
+
+.article-header img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.article-header h2 {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 15px;
+    background: linear-gradient(transparent, rgba(0,0,0,0.7));
+    color: white;
+    margin: 0;
+}
+
+.article-body {
+    padding: 20px;
+    line-height: 1.6;
+}
+
+.close {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    width: 30px;
+    height: 30px;
+    background: white;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    z-index: 1001;
+    transition: all 0.2s ease;  /* 修改为 all */
+}
+
+.close:hover {
+    transform: scale(1.1);
+    background: #f5f5f5;
+}
+
+/* 移除原来的 × 符号样式 */
+.close::before,
+.close::after {
+    display: none;
+}
+
+/* 使用字符 × 替代 */
+.close {
+    font-size: 20px;  /* × 符号大小 */
+    line-height: 1;   /* 确保垂直居中 */
+}
+
+.wechat-article {
+    display: block;
+    text-decoration: none;
+    background: #fff;
+    border-radius: 8px;
+    padding: 12px;
+    margin: 10px 0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;  /* 添加过渡效果 */
+}
+
+.wechat-article:hover {
+    transform: translateY(-2px);  /* 向上浮动 */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);  /* 更深的阴影 */
+}
+
+.article-title {
+    font-size: 16px;
+    color: #333;
+    font-weight: bold;
+    margin-bottom: 8px;
+    line-height: 1.4;
+}
+
+.article-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 8px 0;
+}
+
+.article-desc {
+    color: #666;
+    font-size: 14px;
+    flex: 1;
+    margin-right: 10px;
+}
+
+.article-info img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.article-source {
+    color: #999;
+    font-size: 12px;
+    border-top: 1px solid #eee;
+    padding-top: 8px;
+    margin-top: 8px;
+}
