@@ -5,21 +5,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SHU 生活学习助手</title>
     <link rel="stylesheet" href="css/index.css">
+    <script src="js/i18n.js"></script>
 </head>
 <body>
+    <div class="language-selector">
+        <button onclick="changeLanguage('zh')">中文</button>
+        <button onclick="changeLanguage('en')">English</button>
+        <button onclick="changeLanguage('fr')">Français</button>
+    </div>
+    
     <div class="avatar">
         <img src="https://shu-assistant.obs.cn-east-3.myhuaweicloud.com/images/avatar.png" alt="智悦小泮">
     </div>
-    <div class="welcome-text">欢迎来到SHU生活学习助手！</div>
+    <div class="welcome-text" data-i18n="welcome">欢迎来到SHU生活学习助手！</div>
     
     <div class="header">
-        <h1>轻松探索校园，开启新生之旅</h1>
-        <p class="subtitle">让我们的聊天机器人智悦小泮助力你快速融入校园生活，获取活动信息、地图导航和更多服务</p>
+        <h1 data-i18n="header">轻松探索校园，开启新生之旅</h1>
+        <p class="subtitle" data-i18n="subtitle">让我们的聊天机器人智悦小泮助力你快速融入校园生活，获取活动信息、地图导航和更多服务</p>
         <div class="button-container">
             <a href="./chat.html">
-                <button class="start-button">立即开始</button>
+                <button class="start-button" data-i18n="startButton">立即开始</button>
             </a>
         </div>
     </div>
+    <script>
+        function changeLanguage(lang) {
+            localStorage.setItem('language', lang);
+            updateContent(lang);
+        }
+
+        function updateContent(lang) {
+            document.querySelectorAll('[data-i18n]').forEach(element => {
+                const key = element.getAttribute('data-i18n');
+                element.textContent = translations[lang][key];
+            });
+        }
+
+        // 初始化语言
+        const currentLang = localStorage.getItem('language') || 'zh';
+        updateContent(currentLang);
+    </script>
 </body>
 </html>

@@ -13,6 +13,14 @@ const speechConfig = SpeechSDK.SpeechConfig.fromSubscription(
 speechConfig.speechSynthesisVoiceName = "zh-CN-XiaoxiaoNeural";
 speechConfig.speechSynthesisLanguage = "zh-CN";
 
+// 在文件开头添加获取当前语言的函数
+function getCurrentLang() {
+    return localStorage.getItem('language') || 'zh';
+}
+
+// 在 switch 语句之前获取当前语言
+const currentLang = getCurrentLang();
+
 // 创建消息操作按钮函数
 function createMessageActions(messageDiv, bubble, originalQuestion) {
     // 创建操作按钮容器
@@ -271,6 +279,12 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // 初始化模态框事件
     initializeModals();
+
+    // 更新语言按钮状态
+    updateLanguageButtons(currentLang);
+
+    // 在页面加载时调用
+    updateHtmlLang(currentLang);
 });
 
 function initializeButtons() {
@@ -279,75 +293,86 @@ function initializeButtons() {
         const button = e.target.closest('button');
         if (!button) return;
 
-        const buttonText = button.textContent.trim();
+        // 获取按钮中的 data-i18n 属性
+        const buttonSpan = button.querySelector('[data-i18n]');
+        if (!buttonSpan) return;
         
-        if (buttonText === '校园地图') {
-            document.getElementById('mapModal').style.display = 'block';
-        } else if (buttonText === '食堂一览') {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'flex items-start space-x-3 message-container';
+        const buttonType = buttonSpan.getAttribute('data-i18n');
+        
+        // 使用 data-i18n 属性值来判断按钮类型
+        switch(buttonType) {
+            case 'campusMap':
+                document.getElementById('mapModal').style.display = 'block';
+                break;
             
-            const avatarDiv = document.createElement('div');
-            avatarDiv.className = 'avatar';
-            const avatarImg = document.createElement('img');
-            avatarImg.src = 'https://shu-assistant.obs.cn-east-3.myhuaweicloud.com/images/avatar.png';
-            avatarImg.alt = 'logo';
-            avatarDiv.appendChild(avatarImg);
-            
-            const bubble = document.createElement('div');
-            bubble.className = 'message-bubble';
-            
-            bubble.innerHTML = `
-                <a href="https://mp.weixin.qq.com/s/eR7F243STLX341U7m7rhBw" class="wechat-article" target="_blank">
-                    <div class="article-title">【SHU·新生季】新手必备指南篇（4）——美食攻略（上）</div>
-                    <div class="article-info">
-                        <div class="article-desc">唯有美食与爱不可辜负！</div>
-                        <img src="https://shu-assistant.obs.cn-east-3.myhuaweicloud.com/images/%E7%BE%8E%E9%A3%9F%E6%94%BB%E7%95%A5.png" alt="食堂封面">
-                    </div>
-                    <div class="article-source">上海大学学生会</div>
-                </a>
+            case 'diningHall':
+                const diningMessageDiv = document.createElement('div');
+                diningMessageDiv.className = 'flex items-start space-x-3 message-container';
                 
-                <a href="https://mp.weixin.qq.com/s/kikUHJBCSw_oI_pVVu8HIA" class="wechat-article" target="_blank">
-                    <div class="article-title">【SHU·新生季】新生必备指南（5）——美食攻略（下）</div>
-                    <div class="article-info">
-                        <div class="article-desc">快到碗里来！</div>
-                        <img src="https://shu-assistant.obs.cn-east-3.myhuaweicloud.com/images/%E7%BE%8E%E9%A3%9F%E6%94%BB%E7%95%A5.png" alt="食堂封面">
-                    </div>
-                    <div class="article-source">上海大学学生会</div>
-                </a>
-            `;
+                const diningAvatarDiv = document.createElement('div');
+                diningAvatarDiv.className = 'avatar';
+                const diningAvatarImg = document.createElement('img');
+                diningAvatarImg.src = 'https://shu-assistant.obs.cn-east-3.myhuaweicloud.com/images/avatar.png';
+                diningAvatarImg.alt = 'logo';
+                diningAvatarDiv.appendChild(diningAvatarImg);
+                
+                const diningBubble = document.createElement('div');
+                diningBubble.className = 'message-bubble';
+                
+                diningBubble.innerHTML = `
+                    <a href="https://mp.weixin.qq.com/s/eR7F243STLX341U7m7rhBw" class="wechat-article" data-article-type="dining1" target="_blank">
+                        <div class="article-title">${translations[currentLang].diningTitle1}</div>
+                        <div class="article-info">
+                            <div class="article-desc">${translations[currentLang].diningDesc1}</div>
+                            <img src="https://shu-assistant.obs.cn-east-3.myhuaweicloud.com/images/%E7%BE%8E%E9%A3%9F%E6%94%BB%E7%95%A5.png" alt="食堂封面">
+                        </div>
+                        <div class="article-source">${translations[currentLang].diningSource}</div>
+                    </a>
+                    
+                    <a href="https://mp.weixin.qq.com/s/kikUHJBCSw_oI_pVVu8HIA" class="wechat-article" data-article-type="dining2" target="_blank">
+                        <div class="article-title">${translations[currentLang].diningTitle2}</div>
+                        <div class="article-info">
+                            <div class="article-desc">${translations[currentLang].diningDesc2}</div>
+                            <img src="https://shu-assistant.obs.cn-east-3.myhuaweicloud.com/images/%E7%BE%8E%E9%A3%9F%E6%94%BB%E7%95%A5.png" alt="食堂封面">
+                        </div>
+                        <div class="article-source">${translations[currentLang].diningSource}</div>
+                    </a>
+                `;
+                
+                diningMessageDiv.appendChild(diningAvatarDiv);
+                diningMessageDiv.appendChild(diningBubble);
+                chatContainer.appendChild(diningMessageDiv);
+                break;
             
-            messageDiv.appendChild(avatarDiv);
-            messageDiv.appendChild(bubble);
-            chatContainer.appendChild(messageDiv);
-        } else if (buttonText === '校园风景一览') {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'flex items-start space-x-3 message-container';
-            
-            const avatarDiv = document.createElement('div');
-            avatarDiv.className = 'avatar';
-            const avatarImg = document.createElement('img');
-            avatarImg.src = 'https://shu-assistant.obs.cn-east-3.myhuaweicloud.com/images/avatar.png';
-            avatarImg.alt = 'logo';
-            avatarDiv.appendChild(avatarImg);
-            
-            const bubble = document.createElement('div');
-            bubble.className = 'message-bubble';
-            
-            bubble.innerHTML = `
-                <a href="https://mp.weixin.qq.com/s/jOhn7oXx8G0Aj2YbW84KkQ" class="wechat-article" target="_blank">
-                    <div class="article-title">新SHU起航｜滴！你有一份学校风景攻略待查收</div>
-                    <div class="article-info">
-                        <div class="article-desc">跟着团小团利用空闲时光，去参观打卡未来四年的生活环境吧</div>
-                        <img src="https://shu-assistant.obs.cn-east-3.myhuaweicloud.com/images/%E6%A0%A1%E5%9B%AD%E9%A3%8E%E6%99%AF.png" alt="校园风景">
-                    </div>
-                    <div class="article-source">团聚上大</div>
-                </a>
-            `;
-            
-            messageDiv.appendChild(avatarDiv);
-            messageDiv.appendChild(bubble);
-            chatContainer.appendChild(messageDiv);
+            case 'campusView':
+                const viewMessageDiv = document.createElement('div');
+                viewMessageDiv.className = 'flex items-start space-x-3 message-container';
+                
+                const viewAvatarDiv = document.createElement('div');
+                viewAvatarDiv.className = 'avatar';
+                const viewAvatarImg = document.createElement('img');
+                viewAvatarImg.src = 'https://shu-assistant.obs.cn-east-3.myhuaweicloud.com/images/avatar.png';
+                viewAvatarImg.alt = 'logo';
+                viewAvatarDiv.appendChild(viewAvatarImg);
+                
+                const viewBubble = document.createElement('div');
+                viewBubble.className = 'message-bubble';
+                
+                viewBubble.innerHTML = `
+                    <a href="https://mp.weixin.qq.com/s/jOhn7oXx8G0Aj2YbW84KkQ" class="wechat-article" target="_blank">
+                        <div class="article-title">${translations[currentLang].viewTitle}</div>
+                        <div class="article-info">
+                            <div class="article-desc">${translations[currentLang].viewDesc}</div>
+                            <img src="https://shu-assistant.obs.cn-east-3.myhuaweicloud.com/images/%E6%A0%A1%E5%9B%AD%E9%A3%8E%E6%99%AF.png" alt="校园风景">
+                        </div>
+                        <div class="article-source">${translations[currentLang].viewSource}</div>
+                    </a>
+                `;
+                
+                viewMessageDiv.appendChild(viewAvatarDiv);
+                viewMessageDiv.appendChild(viewBubble);
+                chatContainer.appendChild(viewMessageDiv);
+                break;
         }
         
         chatContainer.scrollTop = chatContainer.scrollHeight;
@@ -397,28 +422,30 @@ async function sendMessage() {
     const message = chatInput.value.trim();
     if (!message) return;
 
-    // 添加用户消息
-    const messageDiv = document.createElement('div');
-    messageDiv.className = 'flex items-start space-x-3 user-message';
-    messageDiv.innerHTML = `
-        <div class="message-bubble" style="background-color: #e3f2fd;">
-            ${message}
-        </div>
-    `;
-    chatContainer.appendChild(messageDiv);
-    
-    // 清空输入框
+    // 清空输入框并重置高度
     chatInput.value = '';
+    chatInput.style.height = 'auto';
 
+    // 创建用户消息
+    const userMessageDiv = document.createElement('div');
+    userMessageDiv.className = 'flex items-start space-x-3 message-container user-message';
+    userMessageDiv.innerHTML = `
+        <div class="message-bubble">${message}</div>
+    `;
+    chatContainer.appendChild(userMessageDiv);
+
+    const currentLang = getCurrentLang();
+    
     try {
         const response = await fetch('http://localhost:8000/chat', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
+                'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ 
-                question: message,
-                session_id: sessionId 
+            body: JSON.stringify({
+                message: message,
+                session_id: sessionId,
+                language: currentLang
             })
         });
 
@@ -526,5 +553,45 @@ async function sendMessage() {
         }
     } catch (error) {
         console.error('Error:', error);
+        bubble.textContent = '系统错误，请稍后重试。';
     }
+}
+
+function updateLanguageButtons(currentLang) {
+    document.querySelectorAll('.language-selector button').forEach(button => {
+        const lang = button.getAttribute('onclick').match(/'(.+?)'/)[1];
+        if (lang === currentLang) {
+            button.classList.add('active');
+        } else {
+            button.classList.remove('active');
+        }
+    });
+}
+
+function updateSpeechConfig(lang) {
+    switch(lang) {
+        case 'en':
+            speechConfig.speechSynthesisVoiceName = "en-US-JennyNeural";
+            speechConfig.speechSynthesisLanguage = "en-US";
+            break;
+        case 'fr':
+            speechConfig.speechSynthesisVoiceName = "fr-FR-DeniseNeural";
+            speechConfig.speechSynthesisLanguage = "fr-FR";
+            break;
+        default:
+            speechConfig.speechSynthesisVoiceName = "zh-CN-XiaoxiaoNeural";
+            speechConfig.speechSynthesisLanguage = "zh-CN";
+    }
+}
+
+function changeLanguage(lang) {
+    localStorage.setItem('language', lang);
+    document.documentElement.lang = lang;
+    updateContent(lang);
+    updateLanguageButtons(lang);
+    updateSpeechConfig(lang);
+}
+
+function updateHtmlLang(lang) {
+    document.documentElement.lang = lang;
 }

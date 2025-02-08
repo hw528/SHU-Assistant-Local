@@ -9,14 +9,13 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <link rel="stylesheet" href="css/chat.css">
   <script src="https://aka.ms/csspeech/jsbrowserpackageraw"></script>
+  <script src="js/i18n.js"></script>
 </head>
 <body class="h-screen flex">
   <div class="sidebar">
+    <img src="images/校徽带字.png" alt="SHU Logo" class="school-logo">
     <h1>
-      <span>智</span>
-      <span>悦</span>
-      <span>小</span>
-      <span>泮</span>
+        <span data-i18n="sidebarTitle">智悦小泮</span>
     </h1>
 
     <button class="back-button">
@@ -36,7 +35,7 @@
               <img src="https://shu-assistant.obs.cn-east-3.myhuaweicloud.com/images/avatar.png" alt="logo">
             </div>
 
-        <div class="message-bubble" style="background: white;">
+        <div class="message-bubble" style="background: white;" data-i18n="greeting">
           Hi，我是SHU生活学习助手，我可以帮助你了解校内食堂信息、选课事项、教室使用和校园建筑分布等问题。
           如果你有任何关于校园生活的疑问，随时告诉我！ 😊
         </div>
@@ -47,15 +46,15 @@
       <div class="chat-buttons">
         <button>
             <i class="fas fa-map-marked-alt"></i>
-            校园地图
+            <span data-i18n="campusMap">校园地图</span>
         </button>
         <button>
             <i class="fas fa-utensils"></i>
-            食堂一览
+            <span data-i18n="diningHall">食堂一览</span>
         </button>
         <button>
             <i class="fas fa-image"></i>
-            校园风景一览
+            <span data-i18n="campusView">校园风景一览</span>
         </button>
       </div>
 
@@ -90,5 +89,52 @@
       <div class="article-body"></div>
   </div>
 </div>
+
+<script>
+    function changeLanguage(lang) {
+        localStorage.setItem('language', lang);
+        document.documentElement.lang = lang;
+        updateContent(lang);
+    }
+
+    function updateContent(lang) {
+        document.documentElement.lang = lang;  // 确保设置 HTML 的 lang 属性
+        
+        // 更新所有带有 data-i18n 属性的元素
+        document.querySelectorAll('[data-i18n]').forEach(element => {
+            const key = element.getAttribute('data-i18n');
+            element.textContent = translations[lang][key];
+        });
+        
+        // 更新已经存在的文章内容
+        document.querySelectorAll('.article-title').forEach(element => {
+            const articleType = element.closest('.wechat-article').getAttribute('data-article-type');
+            if (articleType) {
+                element.textContent = translations[lang][articleType + 'Title'];
+            }
+        });
+        
+        document.querySelectorAll('.article-desc').forEach(element => {
+            const articleType = element.closest('.wechat-article').getAttribute('data-article-type');
+            if (articleType) {
+                element.textContent = translations[lang][articleType + 'Desc'];
+            }
+        });
+        
+        document.querySelectorAll('.article-source').forEach(element => {
+            const articleType = element.closest('.wechat-article').getAttribute('data-article-type');
+            if (articleType) {
+                element.textContent = translations[lang][articleType + 'Source'];
+            }
+        });
+    }
+
+    // 页面加载时初始化语言
+    document.addEventListener('DOMContentLoaded', () => {
+        const currentLang = localStorage.getItem('language') || 'zh';
+        document.documentElement.lang = currentLang;
+        updateContent(currentLang);
+    });
+</script>
 </body>
 </html>

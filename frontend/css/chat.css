@@ -311,15 +311,36 @@ body {
     position: relative;
 }
 
+/* 英文和法文时的宽度调整 */
+[lang="en"] .sidebar {
+    width: 10rem;
+}
+[lang="fr"] .sidebar {
+    width: 11rem;
+}
+
+/* 英文和法文时的文字样式和位置调整 */
+[lang="en"] .sidebar h1,
+[lang="fr"] .sidebar h1 {
+    writing-mode: horizontal-tb;
+    text-orientation: mixed;
+    font-size: 2.4rem;
+    line-height: 2;
+    text-align: center;
+    margin: 10px auto 20px;  /* 把 120px 改成 90px，减少顶部边距 */
+    word-spacing: normal;
+    white-space: pre-line;
+}
+
 .sidebar h1 {
     font-family: "雅酷黑45";
-    font-size: 3.4rem;  /* text-xl */
-    color: rgb(59, 154, 231);  /* text-teal-600 */
+    font-size: 3.4rem;
+    color: rgb(59, 154, 231);
     font-weight: bold;
     margin-top: 0.001rem;  /* mt-5 */
         
     text-shadow: 
-    -1px -1px 0.5px white,
+        -1px -1px 0.5px white,
         1px -1px 0.5px white,
         -1px 1px 0.5px white,
         1px 1px 0.5px white,
@@ -354,6 +375,7 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
+
 .sidebar h1 span {
     display: block;
     margin: 10px 0;  /* 调整每个字符之间的间距 */
@@ -516,4 +538,41 @@ body {
     border-top: 1px solid #eee;
     padding-top: 8px;
     margin-top: 8px;
+}
+
+.language-selector {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    gap: 10px;
+    z-index: 1000;
+}
+
+.language-selector button {
+    background: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.language-selector button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+/* 默认隐藏校徽 */
+.school-logo {
+    display: none;
+    position: absolute;
+    top: 20px;
+}
+
+/* 英文和法文时显示校徽 */
+[lang="en"] .school-logo,
+[lang="fr"] .school-logo {
+    display: block;
 }
